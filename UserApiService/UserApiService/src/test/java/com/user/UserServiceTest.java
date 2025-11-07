@@ -1,0 +1,46 @@
+package com.user;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.user.model.User;
+import com.user.repositories.UserRepository;
+import com.user.services.UserServiceImpl;
+
+@ExtendWith(MockitoExtension.class)
+public class UserServiceTest {
+	
+	// 1. @Mock creates a fake UserRepository
+	@Mock
+	private UserRepository userRepo;
+	
+	@InjectMocks
+	private UserServiceImpl userServiceImpl;
+	
+	@Test
+	void whenCreateUser_shouldSaveToRepository() {
+		
+		//1. arrange the users
+		User userToSave = new User("bharath","bharath01@gmail.com");
+		User userWithId = new User(1L,"bharath","bharath01@gmail.com");
+		
+		 // Stub the mock repository's save method
+		when(userRepo.save(any(User.class))).thenReturn(userWithId);
+		
+        User savedUser = userServiceImpl.createUser(userToSave);
+       
+        verify(userRepo).save(any(User.class));
+
+        // Also assert that the correct object was returned
+        assertThat(savedUser).isNotNull();
+        assertThat(savedUser.getName()).isEqualTo("bharath");
+	}
+}

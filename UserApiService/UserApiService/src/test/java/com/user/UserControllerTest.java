@@ -1,7 +1,12 @@
 package com.user;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +37,24 @@ public class UserControllerTest {
 	@Test
 	void whenPostUser_thenReturns201Created() throws Exception {
 		
-		// 1. Create our test user object
-		User user = new User(Long.parseLong("1"), "bharath","bharath01@gmail.com");
+		// 1. Create our test user objects
+		User userToCreate = new User("bharath","bharath01@gmail.com");
+		User savedUser = new User(1L,"bharath","bharath01@gmail.com");
 		
-		//2. Convert the user object to Json String
-		String userJson = objectMapper.writeValueAsString(user);
+		//2. When userService.createUser is called with ANY User object, then return our 'savedUser' object
+		when(userService.createUser(any(User.class))).thenReturn(savedUser);
 		
-		//3. Assert: Perform the POST request and check the response
-		mockMvc.perform(post("/users") // Perform POST to /users
-                .contentType(MediaType.APPLICATION_JSON) // Set the content type header
-                .content(userJson)) // Set the request body
-                
-		//4. This is the assertion that will Fail. We expect 201 (Created), but will get 404 (Not Found)
-		//because the endpoint doesn't exist.
-                .andExpect(status().isCreated());
+		//3. Perform the POST request
+		mockMvc.perform(post("/users")
+			   .contentType(MediaType.APPLICATION_JSON)
+			   .content(objectMapper.writeValueAsString(userToCreate)))
+			
+		// 4. Assert: Check the response status and body
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id").value(1L))
+				.andExpect(jsonPath("$.name").value("bharath"));
+		
+		//5.verify if the userService is called
+		verify(userService).createUser(any(User.class));
 	}
 }
