@@ -39,7 +39,7 @@ public class UserControllerTest {
 		
 		// 1. Create our test user objects
 		User userToCreate = new User("bharath","bharath01@gmail.com");
-		User savedUser = new User(1L,"bharath","bharath01@gmail.com");
+		User savedUser = new User("1","bharath","bharath01@gmail.com");
 		
 		//2. When userService.createUser is called with ANY User object, then return our 'savedUser' object
 		when(userService.createUser(any(User.class))).thenReturn(savedUser);
@@ -51,7 +51,7 @@ public class UserControllerTest {
 			
 		// 4. Assert: Check the response status and body
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").value(1L))
+				.andExpect(jsonPath("$.id").value("1"))
 				.andExpect(jsonPath("$.name").value("bharath"));
 		
 		//5.verify if the userService is called

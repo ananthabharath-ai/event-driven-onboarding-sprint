@@ -12,7 +12,7 @@
     </parent>
     
     <!-- Project Coordinates -->
-    <groupId>com.example</groupId>
+    <groupId>com.user</groupId>
     <artifactId>my-spring-project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>my-spring-project</name>
@@ -51,7 +51,27 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>     
-         <!-- 5. Lombok: Reduces boilerplate code -->
+
+        <!-- 
+          NEW DEPENDENCIES FOR DAY 3 (TESTCONTAINERS)
+          - The versions are managed automatically by your spring-boot-starter-parent
+        -->
+        
+        <!-- 5. Testcontainers: MongoDB Module -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- 6. Testcontainers: JUnit 5 Integration (for @Testcontainers) -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+         
+         <!-- 7. Lombok: Reduces boilerplate code -->
        <dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>

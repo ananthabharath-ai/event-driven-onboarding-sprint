@@ -30,7 +30,7 @@ public class UserServiceTest {
 		
 		//1. arrange the users
 		User userToSave = new User("bharath","bharath01@gmail.com");
-		User userWithId = new User(1L,"bharath","bharath01@gmail.com");
+		User userWithId = new User("1","bharath","bharath01@gmail.com");
 		
 		 // Stub the mock repository's save method
 		when(userRepo.save(any(User.class))).thenReturn(userWithId);
@@ -41,6 +41,8 @@ public class UserServiceTest {
 
         // Also assert that the correct object was returned
         assertThat(savedUser).isNotNull();
+        assertThat(savedUser.getId()).isEqualTo("1"); // Check the String ID
         assertThat(savedUser.getName()).isEqualTo("bharath");
+        assertThat(savedUser.getEmail()).isEqualTo("bharath01@gmail.com"); // Fixed assertion data
 	}
 }
