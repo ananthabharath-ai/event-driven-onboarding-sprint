@@ -1,0 +1,17 @@
+Output for the mvn test without adding post request method in the controller class
+
+-------------------------------------------------------------------------------
+Test set: com.user.UserControllerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.489 s <<< FAILURE! -- in com.user.UserControllerTest
+com.user.UserControllerTest.whenPostUser_thenReturns201Created -- Time elapsed: 0.112 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<201> but was:<404>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.user.UserControllerTest.whenPostUser_thenReturns201Created(UserControllerTest.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
