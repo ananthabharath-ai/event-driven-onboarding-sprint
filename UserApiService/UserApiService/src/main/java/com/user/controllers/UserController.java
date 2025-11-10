@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import com.user.model.User;
-import com.user.services.UserService;
+import com.user.services.UserService; 
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 	
+  
 	@Autowired
 	private UserService userService;
 	

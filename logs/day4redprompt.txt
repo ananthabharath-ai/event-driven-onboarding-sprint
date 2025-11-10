@@ -1,0 +1,13 @@
+we are getting as in the userServiceImpl we have not sent the message to the topic so we are getting the error as IllegalStateException
+
+-------------------------------------------------------------------------------
+Test set: com.user.UserServiceIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 15.69 s <<< FAILURE! -- in com.user.UserServiceIntegrationTest
+com.user.UserServiceIntegrationTest.whenCreateUser_thenPublishesKafkaEvent -- Time elapsed: 10.73 s <<< ERROR!
+java.lang.IllegalStateException: No records found for topic
+	at org.springframework.kafka.test.utils.KafkaTestUtils.getSingleRecord(KafkaTestUtils.java:181)
+	at com.user.UserServiceIntegrationTest.whenCreateUser_thenPublishesKafkaEvent(UserServiceIntegrationTest.java:95)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)

@@ -53,8 +53,7 @@
         </dependency>     
 
         <!-- 
-          NEW DEPENDENCIES FOR DAY 3 (TESTCONTAINERS)
-          - The versions are managed automatically by your spring-boot-starter-parent
+          DEPENDENCIES FOR DAY 3 (TESTCONTAINERS)
         -->
         
         <!-- 5. Testcontainers: MongoDB Module -->
@@ -70,8 +69,19 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 
+          NEW DEPENDENCY FOR DAY 4 (KAFKA TEST)
+        -->
          
-         <!-- 7. Lombok: Reduces boilerplate code -->
+        <!-- 7. Spring Kafka Test: For @EmbeddedKafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+         
+        <!-- 8. Lombok: Reduces boilerplate code -->
        <dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>

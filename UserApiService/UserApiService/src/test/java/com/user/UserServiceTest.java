@@ -2,6 +2,7 @@ package com.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import com.user.model.User;
 import com.user.repositories.UserRepository;
@@ -22,8 +24,14 @@ public class UserServiceTest {
 	@Mock
 	private UserRepository userRepo;
 	
+	// 2. We now ALSO need to mock the KafkaTemplate for day4
+	@Mock
+	private KafkaTemplate<String,Object>kafkaTemplate;
+	
 	@InjectMocks
 	private UserServiceImpl userServiceImpl;
+	
+	private static final String topicName = "user-created-topic-cloud";
 	
 	@Test
 	void whenCreateUser_shouldSaveToRepository() {
@@ -39,6 +47,9 @@ public class UserServiceTest {
        
         verify(userRepo).save(any(User.class));
 
+        // We can also verify that the kafkaTemplate.send() method was called!
+        verify(kafkaTemplate).send(eq(topicName), any(String.class), any(User.class));
+    
         // Also assert that the correct object was returned
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getId()).isEqualTo("1"); // Check the String ID
