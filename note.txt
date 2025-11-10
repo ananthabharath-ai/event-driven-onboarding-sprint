@@ -1,0 +1,1 @@
+mvn test -Dtest=com.profiles.ProfileControllerTest : To run the a particular test

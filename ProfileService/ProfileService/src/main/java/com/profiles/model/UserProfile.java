@@ -21,4 +21,5 @@ public class UserProfile {
     public String getUserId() {
         return this.userId;
     }
+
 }
