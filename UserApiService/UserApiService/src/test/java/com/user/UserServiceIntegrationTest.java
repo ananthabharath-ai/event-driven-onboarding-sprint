@@ -45,7 +45,7 @@ public class UserServiceIntegrationTest {
 	@MockBean
 	private UserRepository userRepository;
 	
-	// The embedded in memory kafka broker for testing, injected so we can get its properties
+	// we have embedded in memory kafka broker for testing, injected so we can get its properties
 	@Autowired
 	private EmbeddedKafkaBroker embeddedKafka;
 	

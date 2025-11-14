@@ -17,7 +17,7 @@ import com.user.model.User;
 import com.user.repositories.UserRepository;
 
 //1. @DataMongoTest: Loads only the Spring Data MongoDB parts of the application.
-//2. @Testcontainers: Enables Testcontainers support for JUnit 5.
+//2. @Testcontainers: Enables Test containers support for JUnit 5.
 @DataMongoTest
 @Testcontainers
 public class UserRepositoryTest {

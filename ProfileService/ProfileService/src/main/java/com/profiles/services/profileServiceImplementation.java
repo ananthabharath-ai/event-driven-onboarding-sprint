@@ -10,7 +10,6 @@ public class profileServiceImplementation implements ProfileService {
 
 	private final ProfileRepository profileRepository;
 
-    // Constructor injection
     public profileServiceImplementation(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
@@ -18,5 +17,10 @@ public class profileServiceImplementation implements ProfileService {
 	@Override
 	public UserProfile createProfile(UserProfile user) {
 		return profileRepository.save(user);
+	}
+
+	@Override
+	public UserProfile getProfileById(String userId) {
+		return profileRepository.findById(userId);
 	}
 }

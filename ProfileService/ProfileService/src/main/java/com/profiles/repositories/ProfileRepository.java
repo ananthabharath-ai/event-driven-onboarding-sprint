@@ -34,21 +34,12 @@ public class ProfileRepository {
             );
         }
     }
-
-    /**
-     * Saves a UserProfile to DynamoDB.
-     *
-     * [THE FIX]: This method now returns the saved UserProfile
-     * to match the service layer's requirements.
-     */
+  
     public UserProfile save(UserProfile profile) {
         profileTable.putItem(profile);
         return profile; // <-- This is the fix
     }
 
-    /**
-     * Finds a UserProfile by its partition key (userId).
-     */
     public UserProfile findById(String userId) {
         return profileTable.getItem(r -> r.key(k -> k.partitionValue(userId)));
     }
