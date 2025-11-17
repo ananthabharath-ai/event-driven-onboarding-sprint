@@ -1,17 +1,19 @@
 /**
- * This is the Day 9 Jenkinsfile for the "Build & Test" stage.
- * FIX: This version explicitly adds Docker arguments to the agent 
- * container definition to resolve the Testcontainers/Ryuk networking error.
+ * Day 9 Jenkinsfile: This pipeline builds and runs all TDD tests for both 
+ * user-api-service (MongoDB Testcontainers) and profile-api-service 
+ * (DynamoDB Testcontainers) in parallel.
+ *
+ * CRITICAL FIXES included here address the Docker-in-Docker networking 
+ * issue (Connection refused to Ryuk).
  */
 pipeline {
     
-    // 1. AGENT: Define our build environment
+    // 1. AGENT: Define our build environment and inject required Docker networking arguments
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17' 
-            // CRITICAL FIX: This is the argument required to enable the Docker-in-Docker 
-            // networking necessary for Testcontainers (Ryuk) to function properly.
-            args '-v /var/run/docker.sock:/var/run/docker.sock --network host' 
+            // CRITICAL FIX: Mounts the Docker socket and forces the host network stack.
+            args '-v /var/run/docker.sock:/var/run/docker.sock --network host'
         }
     }
 
@@ -35,7 +37,8 @@ pipeline {
                 stage('Build & Test user-api') {
                     steps {
                         echo 'Building and testing user-api-service...'
-                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install'
+                        // We pass the Maven property file located in the parent directory (../)
+                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install -Dtestcontainers.properties.file=../.testcontainers.properties'
                     }
                 }
                 
@@ -43,7 +46,8 @@ pipeline {
                 stage('Build & Test profile-api') {
                     steps {
                         echo 'Building and testing profile-api-service...'
-                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install'
+                        // We pass the Maven property file located in the parent directory (../)
+                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install -Dtestcontainers.properties.file=../.testcontainers.properties'
                     }
                 }
             }
@@ -54,7 +58,8 @@ pipeline {
     post {
         always {
             echo 'Build & Test pipeline finished.'
-            junit '**/target/surefire-reports/*.xml'
+            // Collect test reports from both modules
+            junit '**/target/surefire-reports/*.xml' 
         }
         success {
             echo 'All tests passed!'
