@@ -2,21 +2,19 @@
  * Day 9 Jenkinsfile: This pipeline builds and runs all TDD tests for both 
  * services in parallel.
  *
- * CRITICAL FIX: The 'network' parameter forces the build agent onto the same 
- * internal Docker network as the Jenkins master container ('eventdrivenonboardingsystem_default'). 
- * This resolves the persistent 'Connection Refused' error with Testcontainers (Ryuk) 
- * by ensuring direct communication between containers.
+ * FIX: Uses the correct 'args' syntax to set the Docker network and inject 
+ * the Maven flag to disable Ryuk, bypassing the persistent 'Connection Refused' error.
+ * NOTE: The Maven flag is for CI success only; manual cleanup is required on the host.
  */
 pipeline {
     
-    // 1. AGENT: Define our build environment and explicitly set the shared network.
+    // 1. AGENT: Define our build environment and use 'args' for network configuration.
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17' 
-            // CRITICAL FIX: Forces the agent onto the same network as Jenkins (using the name you found).
-            network 'eventdrivenonboardingsystem_default' 
-            // Mount Docker socket, still needed for running containers inside containers (D-I-D).
-            args '-v /var/run/docker.sock:/var/run/docker.sock' 
+            // CRITICAL FIX: Combines network setting and socket mount into the 
+            // ONLY accepted field: 'args'.
+            args '--network eventdrivenonboardingsystem_default -v /var/run/docker.sock:/var/run/docker.sock' 
         }
     }
 
@@ -40,8 +38,8 @@ pipeline {
                 stage('Build & Test user-api') {
                     steps {
                         echo 'Building and testing user-api-service...'
-                        // We no longer need the properties file, as this network fix is system-level.
-                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install'
+                        // DIRECTLY inject the Ryuk bypass flag
+                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install -Dtestcontainers.ryuk.disabled=true'
                     }
                 }
                 
@@ -49,7 +47,8 @@ pipeline {
                 stage('Build & Test profile-api') {
                     steps {
                         echo 'Building and testing profile-api-service...'
-                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install'
+                        // DIRECTLY inject the Ryuk bypass flag
+                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install -Dtestcontainers.ryuk.disabled=true'
                     }
                 }
             }
