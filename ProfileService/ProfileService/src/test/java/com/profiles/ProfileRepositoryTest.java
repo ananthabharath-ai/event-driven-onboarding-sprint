@@ -36,7 +36,7 @@ public class ProfileRepositoryTest {
     private ProfileService profileService;
 
     // This must match the table name in the ProfileRepository
-    private static final String TABLE_NAME = "user_profiles";
+    private static final String TABLE_NAME = "UserProfile";
 
     // Re-create the table before each test
     @BeforeEach
