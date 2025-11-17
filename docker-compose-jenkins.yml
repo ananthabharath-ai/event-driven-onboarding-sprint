@@ -2,24 +2,19 @@
 # Run it with: docker compose -f docker-compose-jenkins.yml up --build
 services:
   jenkins:
-    image: jenkins/jenkins:lts-jdk17 # Use the Java 17 version of Jenkins
+    # [THE FIX]: Change the image to 'jenkinsci/blueocean'
+    # This image includes the Docker CLI, which fixes the "docker: not found" error.
+    image: jenkinsci/blueocean:latest
     container_name: jenkins-sprint
-    privileged: true # Give it root-like privileges
-    user: root # Run as root to access the Docker socket
+    privileged: true 
+    user: root 
     ports:
-      - "8090:8080" # Map host port 8090 to Jenkins' port 8080
-      - "50000:50000" # For agent communication
+      - "8090:8080" 
+      - "50000:50000" 
     volumes:
-      # This "mounts" the Docker command from your PC into the container,
-      # so Jenkins can build Docker images.
       - /var/run/docker.sock:/var/run/docker.sock
-      # This creates a persistent "home" for Jenkins, so your
-      # jobs and plugins are saved.
       - jenkins_home:/var/jenkins_home
-    environment:
-      # This tells the 'maven:3-eclipse-temurin-17' agent to use the same
-      # Java 17 that Jenkins is running.
-      - JAVA_HOME=/opt/java/openjdk
+    # We removed the JAVA_HOME environment variable as it's not needed here
 
 volumes:
-  jenkins_home: # Defines the persistent volume
+  jenkins_home:
