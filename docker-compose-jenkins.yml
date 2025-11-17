@@ -1,0 +1,25 @@
+# This file is used to run a local Jenkins server in Docker
+# Run it with: docker compose -f docker-compose-jenkins.yml up --build
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17 # Use the Java 17 version of Jenkins
+    container_name: jenkins-sprint
+    privileged: true # Give it root-like privileges
+    user: root # Run as root to access the Docker socket
+    ports:
+      - "8090:8080" # Map host port 8090 to Jenkins' port 8080
+      - "50000:50000" # For agent communication
+    volumes:
+      # This "mounts" the Docker command from your PC into the container,
+      # so Jenkins can build Docker images.
+      - /var/run/docker.sock:/var/run/docker.sock
+      # This creates a persistent "home" for Jenkins, so your
+      # jobs and plugins are saved.
+      - jenkins_home:/var/jenkins_home
+    environment:
+      # This tells the 'maven:3-eclipse-temurin-17' agent to use the same
+      # Java 17 that Jenkins is running.
+      - JAVA_HOME=/opt/java/openjdk
+
+volumes:
+  jenkins_home: # Defines the persistent volume
