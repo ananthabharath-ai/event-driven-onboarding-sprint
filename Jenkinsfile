@@ -2,19 +2,21 @@
  * Day 9 Jenkinsfile: This pipeline builds and runs all TDD tests for both 
  * services in parallel.
  *
- * CRITICAL FIX: The `args` parameter ensures the Docker agent can communicate 
- * with the host Docker environment. The Maven property flag tells Testcontainers 
- * (Ryuk) to use the guaranteed Docker host alias, resolving the stubborn 
- * "Connection Refused" network errors in Docker-in-Docker CI environments.
+ * CRITICAL FIX: The 'network' parameter forces the build agent onto the same 
+ * internal Docker network as the Jenkins master container ('eventdrivenonboardingsystem_default'). 
+ * This resolves the persistent 'Connection Refused' error with Testcontainers (Ryuk) 
+ * by ensuring direct communication between containers.
  */
 pipeline {
     
-    // 1. AGENT: Define our build environment and inject required Docker networking arguments
+    // 1. AGENT: Define our build environment and explicitly set the shared network.
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17' 
-            // CRITICAL FIX: Mounts Docker socket and forces host network stack.
-            args '-v /var/run/docker.sock:/var/run/docker.sock --network host' 
+            // CRITICAL FIX: Forces the agent onto the same network as Jenkins (using the name you found).
+            network 'eventdrivenonboardingsystem_default' 
+            // Mount Docker socket, still needed for running containers inside containers (D-I-D).
+            args '-v /var/run/docker.sock:/var/run/docker.sock' 
         }
     }
 
@@ -38,8 +40,8 @@ pipeline {
                 stage('Build & Test user-api') {
                     steps {
                         echo 'Building and testing user-api-service...'
-                        // Passes the location of the properties file (in the parent directory)
-                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install -Dtestcontainers.properties.file=../.testcontainers.properties'
+                        // We no longer need the properties file, as this network fix is system-level.
+                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install'
                     }
                 }
                 
@@ -47,8 +49,7 @@ pipeline {
                 stage('Build & Test profile-api') {
                     steps {
                         echo 'Building and testing profile-api-service...'
-                        // Passes the location of the properties file (in the parent directory)
-                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install -Dtestcontainers.properties.file=../.testcontainers.properties'
+                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install'
                     }
                 }
             }
