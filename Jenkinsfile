@@ -1,12 +1,17 @@
+/**
+ * This is the Day 9 Jenkinsfile for the "Build & Test" stage.
+ * FIX: This version explicitly adds Docker arguments to the agent 
+ * container definition to resolve the Testcontainers/Ryuk networking error.
+ */
 pipeline {
     
     // 1. AGENT: Define our build environment
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17' 
-            // [THE NEW FIX]: This is equivalent to setting --network host 
-            // but uses the official Jenkins syntax.
-            networkMode 'host'
+            // CRITICAL FIX: This is the argument required to enable the Docker-in-Docker 
+            // networking necessary for Testcontainers (Ryuk) to function properly.
+            args '-v /var/run/docker.sock:/var/run/docker.sock --network host' 
         }
     }
 
