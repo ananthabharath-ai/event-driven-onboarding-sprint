@@ -1,10 +1,11 @@
 /**
  * Day 9 Jenkinsfile: This pipeline builds and runs all TDD tests for both 
- * user-api-service (MongoDB Testcontainers) and profile-api-service 
- * (DynamoDB Testcontainers) in parallel.
+ * services in parallel.
  *
- * CRITICAL FIXES included here address the Docker-in-Docker networking 
- * issue (Connection refused to Ryuk).
+ * CRITICAL FIX: The `args` parameter uses the host network. Combined 
+ * with the `.testcontainers.properties` file (which forces Ryuk to use 
+ * 'host.docker.internal'), this resolves the persistent Docker network 
+ * "Connection Refused" error in Docker-in-Docker CI environments.
  */
 pipeline {
     
@@ -12,8 +13,9 @@ pipeline {
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17' 
-            // CRITICAL FIX: Mounts the Docker socket and forces the host network stack.
-            args '-v /var/run/docker.sock:/var/run/docker.sock --network host'
+            // CRITICAL FIX: Mounts Docker socket and forces host network stack.
+            // This enables communication for Testcontainers/Ryuk using the 'host.docker.internal' alias.
+            args '-v /var/run/docker.sock:/var/run/docker.sock --network host' 
         }
     }
 
@@ -37,7 +39,7 @@ pipeline {
                 stage('Build & Test user-api') {
                     steps {
                         echo 'Building and testing user-api-service...'
-                        // We pass the Maven property file located in the parent directory (../)
+                        // Passes the location of the properties file (located in the parent directory)
                         sh 'mvn -f UserApiService/UserApiService/pom.xml clean install -Dtestcontainers.properties.file=../.testcontainers.properties'
                     }
                 }
@@ -46,7 +48,7 @@ pipeline {
                 stage('Build & Test profile-api') {
                     steps {
                         echo 'Building and testing profile-api-service...'
-                        // We pass the Maven property file located in the parent directory (../)
+                        // Passes the location of the properties file (located in the parent directory)
                         sh 'mvn -f ProfileService/ProfileService/pom.xml clean install -Dtestcontainers.properties.file=../.testcontainers.properties'
                     }
                 }
