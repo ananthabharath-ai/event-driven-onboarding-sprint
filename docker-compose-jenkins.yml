@@ -1,10 +1,9 @@
 # This file is used to run a local Jenkins server in Docker
-# Run it with: docker compose -f docker-compose-jenkins.yml up --build
 services:
   jenkins:
-    # [THE FIX]: Change the image to 'jenkinsci/blueocean'
-    # This image includes the Docker CLI, which fixes the "docker: not found" error.
-    image: jenkinsci/blueocean:latest
+    build:
+      context: .
+      dockerfile: jenkins.dockerfile # Builds our custom image
     container_name: jenkins-sprint
     privileged: true 
     user: root 
@@ -14,7 +13,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - jenkins_home:/var/jenkins_home
-    # We removed the JAVA_HOME environment variable as it's not needed here
+    environment:
+      # This fix is for the plugin downloads
+      JENKINS_UC_URL: http://updates.jenkins.io/update-center.json
+      # This fix is for the git "ls-remote" in the UI
+      JENKINS_OPTS: "-Dorg.jenkinsci.plugins.gitclient.Git.disableSslVerification=true"
 
 volumes:
   jenkins_home:
