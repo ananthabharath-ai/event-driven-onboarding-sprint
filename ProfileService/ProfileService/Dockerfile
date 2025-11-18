@@ -8,6 +8,9 @@ WORKDIR /app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 
+#FIX: Make mvnw executable for building in jenkins
+RUN chmod +x mvnw
+
 # Download all dependencies first to leverage Docker layer caching
 RUN ./mvnw dependency:go-offline
 
