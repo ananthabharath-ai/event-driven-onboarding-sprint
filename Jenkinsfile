@@ -9,8 +9,8 @@ pipeline {
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17'
-            // Mount Docker socket and use host network
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root --network host'
+            // CRITICAL: Use --add-host to map host.docker.internal to host gateway
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root --network host --add-host=host.docker.internal:host-gateway'
         }
     }
 
@@ -20,7 +20,13 @@ pipeline {
         
         // Docker configuration
         DOCKER_HOST = 'unix:///var/run/docker.sock'
-        TESTCONTAINERS_HOST_OVERRIDE = 'localhost'
+        
+        // CRITICAL FIX: Tell Testcontainers to use host.docker.internal
+        // This allows containers to communicate in Docker-in-Docker scenarios
+        TESTCONTAINERS_HOST_OVERRIDE = 'host.docker.internal'
+        
+        // Alternative: Use Docker host gateway IP
+        TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = '/var/run/docker.sock'
     }
 
     stages {
