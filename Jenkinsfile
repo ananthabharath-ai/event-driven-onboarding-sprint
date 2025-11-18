@@ -29,10 +29,13 @@ pipeline {
                 echo 'Setting up build environment...'
                 sh '''
                     apt-get update -qq
-                    apt-get install -y -qq docker.io
+                    apt-get install -y -qq docker.io awscli
                     
                     echo "=== Docker version ==="
                     docker --version
+
+                    echo "=== AWS CLI version ==="
+                    aws --version
                     
                     echo "=== Docker connectivity test ==="
                     docker ps
