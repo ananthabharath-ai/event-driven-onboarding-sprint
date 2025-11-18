@@ -9,6 +9,7 @@ pipeline {
     environment {
         DOCKER_HOST = 'unix:///var/run/docker.sock'
         TESTCONTAINERS_HOST_OVERRIDE = 'host.docker.internal'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -58,6 +59,35 @@ pipeline {
                     }
                 }
             }
+        }
+
+        stage("Build Images for the user-api-service and profile-api-service"){
+            parallel{
+
+                    stage("Build the user-api docker-image"){
+                        steps{
+                            echo 'Building the docker image for the user-api-service...'
+                            sh '''
+                            cd UserApiService/UserApiService
+                            docker build -t user-api-service:${IMAGE_TAG} .
+                            docker tag user-api-service:${IMAGE_TAG} user-api-service:latest
+                            echo 'user-api-service image created successfully'
+                            '''
+                        }
+                    }
+
+                    stage("Build the profile-api docker image"){
+                        steps{
+                            echo "Building the docker image for the profile-api-service..."
+                            sh '''
+                            cd ProfileService/ProfileService
+                            docker build -t profile-api-service:${IMAGE_TAG} .                      
+                            docker tag profile-api-service:${IMAGE_TAG} profile-api-service:latest
+                            echo 'profile-api-service image created successfully'
+                            '''
+                        }  
+                    }
+                }
         }
     }
 
