@@ -29,7 +29,7 @@ pipeline {
                 echo 'Setting up build environment...'
                 sh '''
                     apt-get update -qq
-                    apt-get install -y -qq docker.io curl unzip
+                    apt-get install -y -qq docker.io curl unzip ca-certificates
 
                     # Install AWS CLI v2
                     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
