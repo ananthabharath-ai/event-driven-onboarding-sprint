@@ -32,7 +32,7 @@ pipeline {
 
                     # Install AWS CLI v2
                     curl --fail --location "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                    unzip awscliv2.zip
+                    unzip -o awscliv2.zip
                     ./aws/install
 
                     echo "=== Docker version ==="
@@ -97,39 +97,35 @@ pipeline {
             }
         }
 
-        stage('Push Docker Images to ECR') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-creds', 
-                                                 usernameVariable: 'AWS_ACCESS_KEY_ID', 
-                                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-                        # Export credentials for AWS CLI
-                        export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                        export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                        export AWS_DEFAULT_REGION=$AWS_REGION
+     stage('Push Docker Images to ECR') {
+        steps {
+            withCredentials([usernamePassword(credentialsId: 'aws-creds', 
+                                            usernameVariable: 'AWS_ACCESS_KEY_ID', 
+                                            passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh '''
+                    # Export credentials for AWS CLI
+                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                    export AWS_DEFAULT_REGION=$AWS_REGION
 
-                        echo "Logging in to AWS ECR..."
-                        aws ecr get-login-password --region $AWS_REGION \
-                            | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+                    echo "Logging in to AWS ECR..."
+                    aws ecr get-login-password --region $AWS_REGION \
+                        | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-                        echo "Tagging Docker images..."
-                        docker tag user-api-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:latest
-                        docker tag user-api-service:${IMAGE_TAG} $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:${IMAGE_TAG}
+                    echo "Tagging Docker images..."
+                    docker tag user-api-service:${IMAGE_TAG} $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:${IMAGE_TAG}
+                    docker tag profile-api-service:${IMAGE_TAG} $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:${IMAGE_TAG}
 
-                        docker tag profile-api-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:latest
-                        docker tag profile-api-service:${IMAGE_TAG} $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:${IMAGE_TAG}
+                    echo "Pushing Docker images to ECR..."
+                    docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:${IMAGE_TAG}
+                    docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:${IMAGE_TAG}
 
-                        echo "Pushing Docker images to ECR..."
-                        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:latest
-                        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:${IMAGE_TAG}
-                        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:latest
-                        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:${IMAGE_TAG}
-
-                        echo "Both images pushed successfully!"
-                    '''
-                }
+                    echo "Both images pushed successfully!"
+                '''
             }
         }
+    }
+
     }
 
     post {
