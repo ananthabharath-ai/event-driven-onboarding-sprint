@@ -29,16 +29,22 @@ pipeline {
                 echo 'Setting up build environment...'
                 sh '''
                     apt-get update -qq
-                    apt-get install -y -qq docker.io awscli
-                    
+                    apt-get install -y -qq docker.io curl unzip
+
+                    # Install AWS CLI v2
+                    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                    unzip awscliv2.zip
+                    ./aws/install
+
                     echo "=== Docker version ==="
                     docker --version
 
                     echo "=== AWS CLI version ==="
                     aws --version
-                    
+
                     echo "=== Docker connectivity test ==="
                     docker ps
+
                 '''
             }
         }
