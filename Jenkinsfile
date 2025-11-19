@@ -8,7 +8,6 @@ pipeline {
     environment {
         DOCKER_HOST = 'unix:///var/run/docker.sock'
         TESTCONTAINERS_HOST_OVERRIDE = 'host.docker.internal'
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
         AWS_REGION = 'ap-south-1'
         AWS_ACCOUNT_ID = '082905009816'
     }
@@ -69,15 +68,15 @@ pipeline {
             }
         }
 
-        stage("Build Docker Images for the user-api-service and profile-api-service") {
+        stage("Build Docker Images") {
             parallel {
+
                 stage("Build user-api image") {
                     steps {
-                        echo 'Building the docker image for the user-api-service...'
+                        echo 'Building docker image for user-api-service...'
                         sh '''
                             cd UserApiService/UserApiService
-                            docker build -t user-api-service:${IMAGE_TAG} .
-                            docker tag user-api-service:${IMAGE_TAG} user-api-service:latest
+                            docker build -t user-api-service:latest .
                             echo 'user-api-service image created successfully'
                         '''
                     }
@@ -85,47 +84,44 @@ pipeline {
 
                 stage("Build profile-api image") {
                     steps {
-                        echo "Building the docker image for the profile-api-service..."
+                        echo 'Building docker image for profile-api-service...'
                         sh '''
                             cd ProfileService/ProfileService
-                            docker build -t profile-api-service:${IMAGE_TAG} .
-                            docker tag profile-api-service:${IMAGE_TAG} profile-api-service:latest
+                            docker build -t profile-api-service:latest .
                             echo 'profile-api-service image created successfully'
                         '''
-                    }  
+                    }
                 }
             }
         }
 
-     stage('Push Docker Images to ECR') {
-        steps {
-            withCredentials([usernamePassword(credentialsId: 'aws-creds', 
-                                            usernameVariable: 'AWS_ACCESS_KEY_ID', 
-                                            passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                sh '''
-                    # Export credentials for AWS CLI
-                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                    export AWS_DEFAULT_REGION=$AWS_REGION
+        stage('Push Docker Images to ECR') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-creds', 
+                                                usernameVariable: 'AWS_ACCESS_KEY_ID', 
+                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                        export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                        export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                        export AWS_DEFAULT_REGION=$AWS_REGION
 
-                    echo "Logging in to AWS ECR..."
-                    aws ecr get-login-password --region $AWS_REGION \
-                        | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+                        echo "Logging in to AWS ECR..."
+                        aws ecr get-login-password --region $AWS_REGION \
+                            | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-                    echo "Tagging Docker images..."
-                    docker tag user-api-service:${IMAGE_TAG} $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:${IMAGE_TAG}
-                    docker tag profile-api-service:${IMAGE_TAG} $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:${IMAGE_TAG}
+                        echo "Tagging images for ECR..."
+                        docker tag user-api-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:latest
+                        docker tag profile-api-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:latest
 
-                    echo "Pushing Docker images to ECR..."
-                    docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:${IMAGE_TAG}
-                    docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:${IMAGE_TAG}
+                        echo "Pushing images to ECR..."
+                        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:latest
+                        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:latest
 
-                    echo "Both images pushed successfully!"
-                '''
+                        echo "Images pushed successfully!"
+                    '''
+                }
             }
         }
-    }
-
     }
 
     post {
