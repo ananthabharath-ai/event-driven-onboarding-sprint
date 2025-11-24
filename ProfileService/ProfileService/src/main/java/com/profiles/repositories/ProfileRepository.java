@@ -1,43 +1,44 @@
 package com.profiles.repositories;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.profiles.model.UserProfile;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
 
 @Repository
+@RequiredArgsConstructor
 public class ProfileRepository {
 
-    private final DynamoDbTable<UserProfile> profileTable;
-    private final DynamoDbClient dynamoDbClient;
+    private final DynamoDbEnhancedClient dynamoDbEnhancedClient;
+    private DynamoDbTable<UserProfile> profileTable;
     private static final String TABLE_NAME = "UserProfile";
 
-    public ProfileRepository(DynamoDbEnhancedClient enhancedClient, DynamoDbClient dynamoDbClient) {
-        this.dynamoDbClient = dynamoDbClient;
-        this.profileTable = enhancedClient.table(TABLE_NAME, TableSchema.fromBean(UserProfile.class));
-        
-        createTableIfNotExists();
-    }
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
 
-    private void createTableIfNotExists() {
-        if (!dynamoDbClient.listTables().tableNames().contains(TABLE_NAME)) {
+ 
+    @PostConstruct
+    public void init() {
+    	profileTable = dynamoDbEnhancedClient.table(TABLE_NAME, TableSchema.fromBean(UserProfile.class));
+    	 // Create table if it does not exist
+        try {
             profileTable.createTable();
-            dynamoDbClient.waiter().waitUntilTableExists(
-                DescribeTableRequest.builder()
-                        .tableName(TABLE_NAME)
-                        .build()
-            );
+            System.out.println("✅ DynamoDB table created: " + TABLE_NAME);
+        } catch (Exception e) {
+            System.out.println("ℹ️ Table already exists or cannot be created: " + e.getMessage());
         }
-    }
+     }
   
     public UserProfile save(UserProfile profile) {
         profileTable.putItem(profile);
-        return profile; // <-- This is the fix
+        System.out.println("✅ Saved profile: " + profile.getUserId());
+        return profile;
     }
 
     public UserProfile findById(String userId) {

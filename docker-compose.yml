@@ -1,8 +1,9 @@
-# This docker-compose file starts all 3rd party services
-# and builds/runs our 2 custom Spring Boot services.
+version: '3.8'
 
 services:
-  
+  # ----------------------------
+  # Infrastructure
+  # ----------------------------
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
     hostname: zookeeper
@@ -18,35 +19,14 @@ services:
     hostname: kafka
     container_name: kafka-sprint
     ports:
-      # [THE FIX 1]: This is the NEW external port for Offset Explorer
-      # The old 9092 port is NO LONGER exposed to your computer.
-      - "29092:29092" 
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      
-      # [THE FIX 2]: Define two listeners:
-      # INTERNAL for container-to-container
-      # EXTERNAL for host-to-container (Offset Explorer)
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      
-      # [THE FIX 3]: Tell Kafka which addresses to advertise
-      # INTERNAL clients (user-api) will be told to connect to kafka:9092
-      # EXTERNAL clients (Offset Explorer) will be told to connect to localhost:29092
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:29092
-      
-      # [THE FIX 4]: Tell Kafka which ports to listen on
-      # Listen on 9092 for internal, and 29092 for external
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
-      
-      # [THE FIX 5]: Tell Kafka which listener is the main one for broker-to-broker talk
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-
-      # --- Other settings ---
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
     depends_on:
       - zookeeper
@@ -63,8 +43,11 @@ services:
     hostname: dynamodb
     container_name: dynamodb-sprint
     ports:
-      - "8000:8000" 
-
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -inMemory -sharedDb"
+  # ----------------------------
+  # Application Services
+  # ----------------------------
   user-api-service:
     build:
       context: ./UserApiService/UserApiService
@@ -72,27 +55,26 @@ services:
     hostname: user-api-service
     container_name: user-api-service-sprint
     ports:
-      - "8080:8080"
+      - "8087:8080"
     environment:
       SPRING_DATA_MONGODB_URI: "mongodb://mongodb:27017/user-db"
-      # [THE FIX 6]: Tell the user-api to use the INTERNAL listener
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      SPRING_PROFILES_ACTIVE: local
     depends_on:
       - kafka
       - mongodb
 
-  profile-api-service:
+  profile-api-service-sprint:
     build:
       context: ./ProfileService/ProfileService
       dockerfile: Dockerfile
     hostname: profile-api-service
     container_name: profile-api-service-sprint
     ports:
-      - "8081:8080" 
+      - "8085:8080"
     environment:
+      SPRING_PROFILES_ACTIVE: local
+      AWS_REGION: ap-south-1
       AWS_DYNAMODB_ENDPOINT: http://dynamodb:8000
-      AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
     depends_on:
       - dynamodb

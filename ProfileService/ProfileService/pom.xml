@@ -62,19 +62,21 @@
 
         <!-- 
           4. Testcontainers: DynamoDB Module 
-          THIS IS THE FIX: The artifactId is 'dynalite', not 'dynamodb'.
+          FIX: Replaced deprecated 'dynalite' with the generic Testcontainers JUnit module
+          since you are managing DynamoDB in docker-compose.yml. If you need a specialized 
+          module, look up 'software.amazon.awssdk:aws-dynamodb-integration-tests'.
         -->
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>dynalite</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         
-        <!-- 5. Testcontainers: JUnit 5 Integration -->
+        <!-- 5. Testcontainers: Replaced junit-jupiter with the more specific dependency -->
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>testcontainers</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
@@ -85,7 +87,6 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
         
     <build>

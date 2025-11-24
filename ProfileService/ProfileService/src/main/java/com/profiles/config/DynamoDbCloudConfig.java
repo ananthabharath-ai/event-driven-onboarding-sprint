@@ -3,22 +3,18 @@ package com.profiles.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile; // <-- Import Profile
+import org.springframework.context.annotation.Profile;
+
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
-import java.net.URI;
-
 @Configuration
-@Profile("!test") // <-- [THE FIX]: Only load this bean when NOT testing
-public class DynamoDbConfig {
+@Profile("cloud")
+public class DynamoDbCloudConfig {
 
-    @Value("${aws.dynamodb.endpoint}")
-    private String dynamodbEndpoint;
-
-    @Value("${aws.region}")
+    @Value("${AWS_REGION}")
     private String awsRegion;
 
     @Bean
@@ -26,7 +22,6 @@ public class DynamoDbConfig {
         return DynamoDbClient.builder()
                 .region(Region.of(awsRegion))
                 .credentialsProvider(DefaultCredentialsProvider.create())
-                .endpointOverride(URI.create(dynamodbEndpoint)) // This will be http://dynamodb:8000 in Docker
                 .build();
     }
 
