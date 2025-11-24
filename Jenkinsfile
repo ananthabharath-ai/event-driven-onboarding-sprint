@@ -9,8 +9,8 @@ pipeline {
         DOCKER_HOST = 'unix:///var/run/docker.sock'
         TESTCONTAINERS_HOST_OVERRIDE = 'host.docker.internal'
         AWS_REGION = 'ap-south-1'
-        AWS_ACCOUNT_ID = '082905009816',
-        ECS_CLUSTER_NAME = 'main-cluster',
+        AWS_ACCOUNT_ID = '082905009816'
+        ECS_CLUSTER_NAME = 'main-cluster'
         USER_SERVICE_NAME = 'user-api-task-family-service-almx9l0e'
         PROFILE_SERVICE_NAME = 'profiles-tasks-service-8p5zxa6d'
         USER_TASK_FAMILY = 'user-api-task-family'
