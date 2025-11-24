@@ -155,6 +155,7 @@ pipeline {
 
                         echo "ECS services updated successfully!"
                     '''
+                }
             }
         }
     }
