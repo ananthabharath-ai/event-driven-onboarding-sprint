@@ -1,6 +1,0 @@
-1. mvn test -Dtest=com.profiles.ProfileControllerTest : To run the a particular test
-2. docker exec -it mongodb-sprint mongosh : to see the database, collections and records in the console for the mongodb
-3. AWS_DYNAMODB_ENDPOINT: http://dynamodb:8000
-                       AWS_REGION: us-east-1
-                       AWS_ACCESS_KEY_ID: test
-      		       AWS_SECRET_ACCESS_KEY: test
