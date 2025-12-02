@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.1</version> <!-- You can update this to the latest stable Spring Boot 3.x version -->
+        <version>3.5.8</version> <!-- You can update this to the latest stable Spring Boot 3.x version -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     
@@ -22,6 +22,7 @@
     <properties>
         <!-- Set Java version to 17 -->
         <java.version>17</java.version>
+    	<testcontainers.version>1.21.0</testcontainers.version>
     </properties>
     
     <!-- Project Dependencies -->
@@ -60,6 +61,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mongodb</artifactId>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         
@@ -67,6 +69,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
