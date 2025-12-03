@@ -158,6 +158,30 @@ pipeline {
                 }
             }
         }
+        stage("Deploy Lambda") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-creds',
+                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                        export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                        export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                        export AWS_DEFAULT_REGION=$AWS_REGION
+
+                        echo "Uploading latest Lambda JAR to S3..."
+                        aws s3 cp NotificationService/NotificationService/target/notification-service-1.0.0.jar\
+                            s3://sprint-notification-service/notification-service-1.0.0.jar
+                        echo "Updating Lambda function with new code from S3..."
+                        aws lambda update-function-code \
+                            --function-name notification-service \
+                            --s3-bucket sprint-notification-service \
+                            --s3-key notification-service-1.0.0.jar
+
+                        echo "Lambda deployment successful! "
+                    '''
+            }
+             }
+        }
     }
 
     post {
