@@ -57,29 +57,22 @@ pipeline {
                 stage('Build & Test user-api') {
                     steps {
                         echo 'Building and testing user-api-service...'
-                        sh '''
-                            mvn -f UserApiService/UserApiService/pom.xml clean install
-                        '''
+                        sh 'mvn -f UserApiService/UserApiService/pom.xml clean install'
                     }
                 }
-
                 stage('Build & Test profile-api') {
                     steps {
                         echo 'Building and testing profile-api-service...'
-                        sh '''
-                            mvn -f ProfileService/ProfileService/pom.xml clean install
-                        '''
+                        sh 'mvn -f ProfileService/ProfileService/pom.xml clean install'
                     }
                 }
             }
         }
 
-        stage("Build Docker Images") {
+        stage('Build Docker Images') {
             parallel {
-
-                stage("Build user-api image") {
+                stage('Build user-api image') {
                     steps {
-                        echo 'Building docker image for user-api-service...'
                         sh '''
                             cd UserApiService/UserApiService
                             docker build -t user-api-service:latest .
@@ -87,10 +80,8 @@ pipeline {
                         '''
                     }
                 }
-
-                stage("Build profile-api image") {
+                stage('Build profile-api image') {
                     steps {
-                        echo 'Building docker image for profile-api-service...'
                         sh '''
                             cd ProfileService/ProfileService
                             docker build -t profile-api-service:latest .
@@ -129,8 +120,8 @@ pipeline {
             }
         }
 
-        stage("Deploy to ECS"){
-            steps{
+        stage('Deploy to ECS') {
+            steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-creds', 
                                                 usernameVariable: 'AWS_ACCESS_KEY_ID', 
                                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -158,10 +149,10 @@ pipeline {
                 }
             }
         }
-        stage("Build And Test") { 
+
+        stage('Build And Test Notification API') { 
             steps { 
                 echo 'Building and testing Notification-api-service...'
-
                 sh '''
                     mvn -f NotificationService/NotificationService/pom.xml clean install
                     echo "Listing target folder:"
@@ -170,24 +161,21 @@ pipeline {
             } 
         }   
 
-        stage("Deploy Lambda") {
+        stage('Deploy Lambda') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-creds',
                                                 usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-
                     sh '''
                         export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
                         export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                         export AWS_DEFAULT_REGION=$AWS_REGION
 
-                        echo "Detecting JAR file..."
-                        JAR_PATH=$(ls NotificationService/NotificationService/target/*.jar)
+                        echo "Using fixed JAR file: notification-service-1.0.0.jar"
+                        JAR_PATH="NotificationService/NotificationService/target/notification-service-1.0.0.jar"
 
-                        echo "Using JAR: $JAR_PATH"
-
-                        echo "Uploading latest Lambda JAR to S3..."
-                        aws s3 cp $JAR_PATH s3://sprint-notification-service/notification-service-1.0.0.jar
+                        echo "Uploading Lambda JAR to S3..."
+                        aws s3 cp "$JAR_PATH" s3://sprint-notification-service/notification-service-1.0.0.jar
 
                         echo "Updating Lambda function with new code from S3..."
                         aws lambda update-function-code \
@@ -200,7 +188,6 @@ pipeline {
                 }
             }
         }
-
     }
 
     post {
