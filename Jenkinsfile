@@ -187,13 +187,13 @@ pipeline {
                         echo "Using JAR: $JAR_PATH"
 
                         echo "Uploading latest Lambda JAR to S3..."
-                        aws s3 cp $JAR_PATH s3://sprint-notification-service/notification-service.jar
+                        aws s3 cp $JAR_PATH s3://sprint-notification-service/notification-service-1.0.0.jar
 
                         echo "Updating Lambda function with new code from S3..."
                         aws lambda update-function-code \
                             --function-name notification-service \
                             --s3-bucket sprint-notification-service \
-                            --s3-key notification-service.jar
+                            --s3-key notification-service-1.0.0.jar
 
                         echo "Lambda deployment successful!"
                     '''
