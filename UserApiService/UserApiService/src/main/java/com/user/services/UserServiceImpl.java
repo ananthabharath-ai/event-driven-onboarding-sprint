@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
 		
 		//2. send the kafka json to kafka topic
 		kafkaTemplate.send(topicName,savedUser.getId(), savedUser);
+		System.out.println("sent the message to kafka");
 		return savedUser;
 	}
 	
