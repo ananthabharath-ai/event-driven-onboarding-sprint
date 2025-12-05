@@ -1,5 +1,5 @@
 pipeline {
-    
+
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17'
@@ -255,10 +255,10 @@ pipeline {
             junit '**/target/surefire-reports/*.xml'
         }
         success {
-            echo 'All tests passed successfully!'
+            echo 'Deployment is SuccessFull'
         }
         failure {
-            echo 'Tests failed, please review the logs in Jenkins console output.'
+            echo 'Deployment failed, please review the logs in Jenkins console output.'
         }
     }
 }
