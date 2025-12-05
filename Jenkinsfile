@@ -1,4 +1,5 @@
 pipeline {
+    
     agent {
         docker { 
             image 'maven:3-eclipse-temurin-17'
@@ -32,6 +33,8 @@ pipeline {
                 echo 'Setting up build environment...'
                 sh '''
                     apt-get update -qq
+                    #Installs the jq command-line JSON processor without asking for confirmation.
+                    apt-get install -y jq
                     apt-get install -y -qq docker.io curl unzip ca-certificates
                     update-ca-certificates
 
@@ -48,6 +51,9 @@ pipeline {
 
                     echo "=== Docker connectivity test ==="
                     docker ps
+
+                    echo "===jq version ==="
+                    jq --version
                 '''
             }
         }
@@ -122,27 +128,80 @@ pipeline {
 
         stage('Deploy to ECS') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-creds', 
-                                                usernameVariable: 'AWS_ACCESS_KEY_ID', 
+                withCredentials([usernamePassword(credentialsId: 'aws-creds',
+                                                usernameVariable: 'AWS_ACCESS_KEY_ID',
                                                 passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+
                     sh '''
                         export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
                         export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                         export AWS_DEFAULT_REGION=$AWS_REGION
 
-                        echo "Deploying user-api-service to ECS..."
+                        echo "---- Fetching current USER-API task definition ----"
+                        USER_TASK_JSON=$(aws ecs describe-task-definition --task-definition $USER_TASK_FAMILY)
+
+                        echo "---- Creating new revision for USER-API ----"
+                        NEW_USER_TASK_DEF=$(echo $USER_TASK_JSON | \
+                            jq --arg IMAGE "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/user-api-service:latest" \
+                            '.taskDefinition |
+                                { 
+                                family: .family,
+                                networkMode: .networkMode,
+                                executionRoleArn: .executionRoleArn,
+                                taskRoleArn: .taskRoleArn,
+                                containerDefinitions: (.containerDefinitions | map(.image = $IMAGE)),
+                                requiresCompatibilities: .requiresCompatibilities,
+                                cpu: .cpu,
+                                memory: .memory 
+                                }')
+
+                        echo "$NEW_USER_TASK_DEF" > new-user-task.json
+
+                        USER_TASK_REV=$(aws ecs register-task-definition \
+                            --cli-input-json file://new-user-task.json \
+                            --query 'taskDefinition.revision' --output text)
+
+                        echo "New USER-API task revision: $USER_TASK_REV"
+
+
+                        echo "---- Fetching current PROFILE-API task definition ----"
+                        PROFILE_TASK_JSON=$(aws ecs describe-task-definition --task-definition $PROFILE_TASK_FAMILY)
+
+                        echo "---- Creating new revision for PROFILE-API ----"
+                        NEW_PROFILE_TASK_DEF=$(echo $PROFILE_TASK_JSON | \
+                            jq --arg IMAGE "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/profile-api-service:latest" \
+                            '.taskDefinition |
+                                { 
+                                family: .family,
+                                networkMode: .networkMode,
+                                executionRoleArn: .executionRoleArn,
+                                taskRoleArn: .taskRoleArn,
+                                containerDefinitions: (.containerDefinitions | map(.image = $IMAGE)),
+                                requiresCompatibilities: .requiresCompatibilities,
+                                cpu: .cpu,
+                                memory: .memory 
+                                }')
+
+                        echo "$NEW_PROFILE_TASK_DEF" > new-profile-task.json
+
+                        PROFILE_TASK_REV=$(aws ecs register-task-definition \
+                            --cli-input-json file://new-profile-task.json \
+                            --query 'taskDefinition.revision' --output text)
+
+                        echo "New PROFILE-API task revision: $PROFILE_TASK_REV"
+
+
+                        echo "---- Updating ECS services to use NEW revisions ----"
+
                         aws ecs update-service \
                             --cluster $ECS_CLUSTER_NAME \
                             --service $USER_SERVICE_NAME \
-                            --task-definition $USER_TASK_FAMILY \
-                            --force-new-deployment
+                            --task-definition "$USER_TASK_FAMILY:$USER_TASK_REV"
 
-                        echo "Deploying profile-api-service to ECS..."
                         aws ecs update-service \
                             --cluster $ECS_CLUSTER_NAME \
                             --service $PROFILE_SERVICE_NAME \
-                            --task-definition $PROFILE_TASK_FAMILY \
-                            --force-new-deployment
+                            --task-definition "$PROFILE_TASK_FAMILY:$PROFILE_TASK_REV"
 
                         echo "ECS services updated successfully!"
                     '''
