@@ -1,0 +1,311 @@
+[33mcommit f0014791690856340e68ba0ea06b285f0832c8b7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Fri Dec 26 17:51:21 2025 +0530
+
+    deleted the aws.txt file as it conatins passswords
+
+[33mcommit 51f737fc6f6e279c1664c0d0d00245954278175e[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Fri Dec 26 17:49:56 2025 +0530
+
+    added the cors expression to connect frontend to cloud
+
+[33mcommit 1d0eea1dabb7331cc054d319b1f5940132167011[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Fri Dec 5 12:50:53 2025 +0530
+
+    chaaged the messages in jenkins file and removed the pem file beacuse it should be only accesses by me
+
+[33mcommit 1768bb0a3a15d821e647490151e3190ac22f018b[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Fri Dec 5 12:25:21 2025 +0530
+
+    Changed the Jenkins file to create new task revision and the service use the latest image and task definition revision
+
+[33mcommit 1db4520d3db6d99375034aefff9b9304ebe793e4[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Thu Dec 4 16:10:23 2025 +0530
+
+    changed the userserivce sop
+
+[33mcommit 03a3a0964a3940c86c452f9cccd0c13d9f712d49[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Wed Dec 3 15:04:25 2025 +0530
+
+    changed the jenkins file to take the correct jar file to deploy the lambda in the jenkins file
+
+[33mcommit c25ddf0f0862b7206c177e94578bd1f44848c024[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Wed Dec 3 13:07:48 2025 +0530
+
+    changed the jenkins file to get the jar file to deploy the lambda in the jenkins file
+
+[33mcommit 5e7cb403c5e8cd5c29c68fecf3dab553318d2403[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Wed Dec 3 11:50:27 2025 +0530
+
+    changed the jenkins file to get the jar file to deploy the lambda in the jenkins file
+
+[33mcommit 6de38fefc282e20992c88e17eb99ec1a37d41192[m
+Author: ananthabharath-ai <anantha.bharath@acuverconsulting.com>
+Date:   Wed Dec 3 11:27:04 2025 +0530
+
+    added the stage to deploy the lambda in the jenkins file
+
+[33mcommit 0c7a2dd1a63b79c70be0d7baa82671f606832552[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Dec 2 16:38:29 2025 +0530
+
+    changed the testcontaienrs version as it is unable to connect to docker desktop
+
+[33mcommit d59141a7d4d2054f94db55d6e07a4641c05e7255[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Fri Nov 28 16:01:38 2025 +0530
+
+    changed the notification handler to accept kafka messages and send post request to porfile-api-service
+
+[33mcommit 6e680dc2561755d3a9ef86813f13e22b965c920d[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Wed Nov 26 14:54:40 2025 +0530
+
+    Changed the notification handler to handle null events
+
+[33mcommit 4f2428484ac487b9c6a826d8c41fa6569af4f0e5[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 24 14:58:11 2025 +0530
+
+    changed the Jenkins files for deployment
+
+[33mcommit 6f5b78166aba0c210638a6f3828c3dd86692322f[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 24 14:53:17 2025 +0530
+
+    Changed the Jenkinsfile to remove comma in the environment
+
+[33mcommit be80f6c9bbcaf4e89a7213c8206123af53347b4a[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 24 14:51:04 2025 +0530
+
+    added the deploy the images to services stage to Jenkins file
+
+[33mcommit 7126cd6f72121e181ce5b05d78b88339f1662765[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 24 14:13:24 2025 +0530
+
+    Changed all the files to work in the aws cloud and local
+
+[33mcommit 35593c15b680ab95a89f8e52f39d55a855f99a38[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Wed Nov 19 10:46:35 2025 +0530
+
+    added the latest tag
+
+[33mcommit 2c8e4c374d5d4ed82b52992b944d1f68d5310b07[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 22:35:51 2025 +0530
+
+    added the code to Jenkins for the interactive prompts
+
+[33mcommit c8816b976a55f7cd9bf53e2b67a6e5967719148d[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 22:15:57 2025 +0530
+
+    added the code to Jenkins for the authorization
+
+[33mcommit 025eefa94f567ab471bbded190216fa0ef02ede0[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 21:45:28 2025 +0530
+
+    added the code to Jenkins for the ssl certificate
+
+[33mcommit 3be6f2fd64010d7b3c99b9900adc03759b0a7854[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 21:32:03 2025 +0530
+
+    added the code to Jenkins to install aws cli using curl
+
+[33mcommit acf3ae328fc764cd751fcd68d7034f6a4cd79583[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 21:22:27 2025 +0530
+
+    added the code to Jenkins to install aws cli
+
+[33mcommit fde5b4d6eca178cebe5fcc02de3c7934f9ab6257[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 20:48:57 2025 +0530
+
+    added the code to push the images to AWS ECR Repoitory
+
+[33mcommit c6df1950380c790318a29cf125ead3a8403e3b02[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 16:29:26 2025 +0530
+
+    Changed the docker files to give permissions to mvnw
+
+[33mcommit 330a5e1b5f6dba9fef9597ea495af35ad2d26c9f[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 16:09:25 2025 +0530
+
+    Changed the jenkins file
+
+[33mcommit 533035099639b3873d76fae72598c885f7d97a3b[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 14:20:29 2025 +0530
+
+    Changed the profilerespository test
+
+[33mcommit 1e3fa41409a85bf251f3b26facd6f1674106cec1[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 12:47:38 2025 +0530
+
+    Changed the dynamodbtestconfig to connect to the correct port
+
+[33mcommit 6696e11aea3c9f21261231fa11d5cf0d6a6b3591[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 12:21:59 2025 +0530
+
+    Changed the jenkins file to connect to mongodb and dynamodb containers
+
+[33mcommit 3c3c47f777d201d542e593b65c7d61909b32f720[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 12:09:54 2025 +0530
+
+    Chnaged the jenkins file to disable the ryuk container and connect to mongodb and dynamodb containers
+
+[33mcommit 5fa09ae92bc3eca6d08e390b89384ff0f6c08e95[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 18 11:30:38 2025 +0530
+
+    Chnaged the jenkins file to disable the ryuk container
+
+[33mcommit 2971f8fafa5be430cf85c35f4106b13d61a4059b[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 21:25:22 2025 +0530
+
+    updated the jenkis file
+
+[33mcommit a7006c3ad2afaabb8239e9683eb56c29346a4222[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 21:19:26 2025 +0530
+
+    deleted the testcontainers.properties and updated the jenkis file
+
+[33mcommit 94777eb723849e33269f40904d1106c089541931[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 21:09:09 2025 +0530
+
+    Final fix: Globally disabling Ryuk via direct D-flag in Maven (D-Dtestcontainers.ryuk.disabled=true)
+
+[33mcommit 4ac719b1f8311162a6c773460d86d04b69dbda1f[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 21:00:50 2025 +0530
+
+    Final attempt: Adding disable-ryuk profile to POMs and activating it in Jenkins
+
+[33mcommit d27ac3159bd439408cdd0cddd6317c46e63b7dbf[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 20:50:59 2025 +0530
+
+    DISABLE RYUK: Bypassing persistent network error for successful pipeline execution
+
+[33mcommit 8634b390f6743a553a3b5d19ff0902da1c665584[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 20:44:27 2025 +0530
+
+    Update Testcontainers properties to force Ryuk binding to 0.0.0.0
+
+[33mcommit 5275899f246fd745f8302ad38c002de42bfaae2e[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 20:36:22 2025 +0530
+
+    Add Testcontainers config file and update Jenkinsfile arguments for network fix
+
+[33mcommit f5553c8191d5daff39a2b9f32cb13a101abf0de1[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 18:37:14 2025 +0530
+
+    Final Jenkinsfile fix: Using Docker args with socket mount and host network for Ryuk compatibility
+
+[33mcommit fe10ba5aa6e4db5b72d8024578cf49980d560806[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 18:34:56 2025 +0530
+
+    Switch to networkMode 'host' for Docker agent to fix Ryuk connection
+
+[33mcommit 0a1b290f6b1f504a6481263669352b2567b46dc2[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 18:24:17 2025 +0530
+
+    Fix Jenkins network for Testcontainers using host network
+
+[33mcommit 461be0d20184f9b8afda78b006633c8df8119c3f[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 15:57:30 2025 +0530
+
+    Modified docker-compose-jenkins.yml
+
+[33mcommit 9cd11b5aecbe61652fda3820a878c80dcde1943f[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 15:14:34 2025 +0530
+
+    Update Jenkinsfile to skip SSL
+
+[33mcommit 68a6a6f8e6bd9ce53e9ce0314c2ac5694eb4a150[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 17 14:34:19 2025 +0530
+
+    completed upto day8 and testing the day9
+
+[33mcommit d7c337b9e22b9c4900ffac3e457bd39a2852278e[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Fri Nov 14 11:49:20 2025 +0530
+
+    modifications done in all the classes
+
+[33mcommit 7c00f6b798ec59a6d3001c7fae6748099d4bd7fe[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 11 15:40:41 2025 +0530
+
+    completed the day7
+
+[33mcommit c0df2e5698ec65a1b24a527a68ffebe5de892c91[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Tue Nov 11 11:08:59 2025 +0530
+
+    completed the Module2
+
+[33mcommit ee6154746597f70858b442d743272d12016ba36a[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 10 19:24:19 2025 +0530
+
+    completed the profile api service day5
+
+[33mcommit 4e071f35f118283109ddcd793eab1f655ea68448[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 10 17:02:36 2025 +0530
+
+    created the profile api service and model class and repository class
+
+[33mcommit 4ce7423ac146ed8149ef1caeae426be49c1206c4[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Mon Nov 10 15:16:46 2025 +0530
+
+    completed the day4 Module2
+
+[33mcommit ad7091d1480ac732f9d92eea3bb80b2f2ce64248[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Fri Nov 7 21:21:50 2025 +0530
+
+    completed the day3 Module1
+
+[33mcommit 332037e912e60b963a5f115dfc9bf30f1372cd33[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Fri Nov 7 19:56:51 2025 +0530
+
+    completed the day2
+
+[33mcommit 65a9a1801666b21c8bd90d72155e8e7dd6d04397[m
+Author: AnanthaBharath <anantha.bharath@acuverconsulting.com>
+Date:   Fri Nov 7 19:01:28 2025 +0530
+
+    Completed the day1 and day2 1st green prompt
