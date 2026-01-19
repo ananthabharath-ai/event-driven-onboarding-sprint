@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Onboarding | Cloud Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #4f46e5;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-bottom: none;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            border: none;
+            padding: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+        }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body>
+
+    <div class="card">
+        <div class="card-header">
+            Join the Platform
+        </div>
+        <div class="card-body p-4">
+            <p class="text-center text-muted mb-4 small">
+                Sign up to trigger the Event-Driven Microservices workflow.
+            </p>
+            
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="userName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="userName" placeholder="e.g. Anantha Bharath" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="userEmail" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="userEmail" placeholder="name@example.com" required>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+
+            <div id="error-msg" class="alert alert-danger mt-3 text-center small" style="display: none;" role="alert"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const errorDiv = document.getElementById('error-msg');
+            const submitBtn = document.querySelector('button');
+
+            // UI Feedback: Disable button
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing...";
+            errorDiv.style.display = 'none';
+
+            try {
+                console.log(`Sending POST request to: ${API_URL}`);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: name, email: email })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Success:", data);
+                    
+                    // Redirect to status page with the new User ID
+                    window.location.href = `status.html?userId=${data.id}`; 
+                } else {
+                    throw new Error(`Server returned status: ${response.status}`);
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                errorDiv.innerHTML = `<strong>Connection Failed!</strong><br>Could not reach ${IP_ADDRESS}:${PORT}.<br>Check if your Fargate task is running.`;
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Create Account";
+            }
+        });
+    </script>
+</body>
+</html>
